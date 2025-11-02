@@ -1,73 +1,201 @@
-# Welcome to your Lovable project
+# AI Resume Analyzer 🚀
 
-## Project info
+An intelligent web application that analyzes resumes using advanced AI technology. Upload your resume, compare it against job requirements, and get instant insights on skill matching, experience analysis, and personalized improvement suggestions.
 
-**URL**: https://lovable.dev/projects/f017643c-9778-42d1-850e-69f12ef2714e
+## ✨ Features
 
-## How can I edit this code?
+- **🤖 AI-Powered Analysis**: Uses Google Gemini AI for intelligent resume parsing and skill extraction
+- **📊 Skill Matching**: Compares your skills against job requirements with detailed match percentage
+- **📁 File Upload**: Drag-and-drop or browse to upload TXT resumes (PDF/DOCX parsing coming soon)
+- **🎯 Smart Extraction**: Automatically identifies skills, experience, and education
+- **💡 Personalized Suggestions**: Get actionable recommendations to improve your resume
+- **📈 Visual Results**: Beautiful charts and progress indicators showing match scores
+- **🎨 Modern UI**: Clean, professional design with smooth animations
+- **📱 Responsive**: Works seamlessly on desktop, tablet, and mobile devices
+- **🔒 Secure**: All processing happens through secure backend functions
 
-There are several ways of editing your application.
+## 🛠️ Technologies Used
 
-**Use Lovable**
+### Frontend
+- **React 18** - Modern UI framework
+- **TypeScript** - Type-safe development
+- **Vite** - Lightning-fast build tool
+- **Tailwind CSS** - Utility-first styling
+- **shadcn/ui** - Beautiful component library
+- **Lucide React** - Icon library
+- **Sonner** - Toast notifications
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/f017643c-9778-42d1-850e-69f12ef2714e) and start prompting.
+### Backend (Lovable Cloud)
+- **Supabase Edge Functions** - Serverless backend
+- **Lovable AI Gateway** - AI model access (Google Gemini)
+- **PostgreSQL** - Database (ready for future features)
 
-Changes made via Lovable will be committed automatically to this repo.
+### AI/NLP
+- **Google Gemini 2.5 Flash** - Advanced language model for resume analysis
+- Intelligent skill extraction and matching
+- Contextual understanding of job requirements
 
-**Use your preferred IDE**
+## 🚀 Getting Started
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+### Prerequisites
+- Node.js 18+ and npm
+- Git
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+### Installation
 
-Follow these steps:
+1. **Clone the repository**
+   ```bash
+   git clone <YOUR_GIT_URL>
+   cd ai-resume-analyzer
+   ```
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+2. **Install dependencies**
+   ```bash
+   npm install
+   ```
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+3. **Start development server**
+   ```bash
+   npm run dev
+   ```
 
-# Step 3: Install the necessary dependencies.
-npm i
+4. **Open your browser**
+   Navigate to `http://localhost:8080`
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
+## 📖 How It Works
+
+1. **Upload Resume**: Drag and drop your resume (TXT format) or paste text directly
+2. **Define Requirements**: Enter job requirements as comma-separated skills
+3. **AI Analysis**: Click "Analyze Resume" - AI extracts and processes information
+4. **View Results**: Get detailed insights including:
+   - Overall match percentage
+   - Matched skills (skills you have that match requirements)
+   - Missing skills (required skills you should develop)
+   - All extracted skills from your resume
+   - Experience and education summaries
+   - Personalized improvement suggestions
+
+## 🎯 Use Cases
+
+- **Job Seekers**: Optimize your resume for specific job postings
+- **Career Development**: Identify skill gaps and areas for improvement
+- **HR Professionals**: Quickly assess candidate resumes
+- **Students**: Prepare better resumes for internships and entry-level positions
+- **Career Coaches**: Provide data-driven resume feedback
+
+## 📁 Project Structure
+
+```
+ai-resume-analyzer/
+├── src/
+│   ├── components/
+│   │   ├── ui/              # shadcn UI components
+│   │   ├── ResumeUploader.tsx   # File upload & input component
+│   │   └── AnalysisResults.tsx  # Results display component
+│   ├── pages/
+│   │   └── Index.tsx        # Main application page
+│   ├── integrations/
+│   │   └── supabase/        # Backend client (auto-generated)
+│   └── index.css            # Global styles & design system
+├── supabase/
+│   ├── functions/
+│   │   └── analyze-resume/  # AI analysis edge function
+│   └── config.toml          # Backend configuration
+└── public/                  # Static assets
 ```
 
-**Edit a file directly in GitHub**
+## 🔧 Configuration
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+The application uses Lovable Cloud (Supabase) for backend services:
 
-**Use GitHub Codespaces**
+- **Edge Functions**: Serverless functions for AI processing
+- **AI Gateway**: Pre-configured access to Google Gemini
+- **No API Keys Required**: Everything is pre-configured
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+## 🌟 Key Features Explained
 
-## What technologies are used for this project?
+### AI-Powered Resume Analysis
+The application uses Google Gemini 2.5 Flash model to:
+- Extract technical and soft skills
+- Identify education details
+- Summarize work experience
+- Compare against job requirements
+- Generate improvement suggestions
 
-This project is built with:
+### Smart Skill Matching
+- Calculates match percentage based on overlap
+- Identifies skills you have vs. skills required
+- Highlights missing critical skills
+- Provides context-aware suggestions
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+### Professional UI/UX
+- Gradient color scheme (professional blue theme)
+- Smooth animations and transitions
+- Progress indicators for loading states
+- Responsive design for all devices
+- Accessible components
 
-## How can I deploy this project?
+## 🚧 Future Enhancements
 
-Simply open [Lovable](https://lovable.dev/projects/f017643c-9778-42d1-850e-69f12ef2714e) and click on Share -> Publish.
+- ✅ PDF and DOCX resume parsing
+- ✅ Save analysis history
+- ✅ Export results as PDF
+- ✅ Multiple job requirement templates
+- ✅ Resume builder integration
+- ✅ Industry-specific skill databases
+- ✅ Resume scoring algorithms
+- ✅ Real-time collaborative editing
 
-## Can I connect a custom domain to my Lovable project?
+## 🤝 Contributing
 
-Yes, you can!
+Contributions are welcome! Here's how you can help:
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+## 📝 License
+
+This project is open source and available under the MIT License.
+
+## 🙏 Acknowledgments
+
+- Built with [Lovable](https://lovable.dev) - The AI-powered app builder
+- Powered by [Google Gemini AI](https://deepmind.google/technologies/gemini/)
+- UI components from [shadcn/ui](https://ui.shadcn.com/)
+- Icons from [Lucide](https://lucide.dev/)
+
+## 📧 Contact & Support
+
+For questions, feedback, or support:
+- Open an issue in this repository
+- Visit [Lovable Documentation](https://docs.lovable.dev/)
+
+---
+
+**Note**: This project demonstrates the integration of modern React development with AI capabilities. It's designed to be educational, practical, and easily extensible for real-world use cases.
+
+## 🎓 Educational Value
+
+This project demonstrates:
+- ✅ **Full-stack development** with React and Serverless functions
+- ✅ **AI/NLP integration** without complex setup
+- ✅ **Modern DevOps** with automated deployment
+- ✅ **Clean architecture** with separation of concerns
+- ✅ **Professional UI/UX** design patterns
+- ✅ **Type-safe development** with TypeScript
+- ✅ **Responsive design** principles
+- ✅ **Secure backend** implementation
+
+Perfect for:
+- Academic projects
+- Portfolio demonstrations  
+- Learning modern web development
+- Understanding AI integration
+- Practicing full-stack skills
+
+---
+
+Made with ❤️ using Lovable AI Platform
