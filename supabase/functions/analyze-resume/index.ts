@@ -74,15 +74,55 @@ Be thorough and accurate in skill extraction.`;
     }
 
     const data = await response.json();
-    const content = data.choices[0].message.content;
     
-    // Parse JSON from response
-    const jsonMatch = content.match(/\{[\s\S]*\}/);
-    if (!jsonMatch) {
-      throw new Error('Failed to extract JSON from AI response');
+    if (!data.choices || !data.choices[0] || !data.choices[0].message) {
+      throw new Error('Invalid response format from AI service');
     }
     
-    const analysis = JSON.parse(jsonMatch[0]);
+    const content = data.choices[0].message.content;
+    
+    if (!content) {
+      throw new Error('Empty response from AI service');
+    }
+    
+    // Parse JSON from response - try to extract JSON object
+    let jsonMatch = content.match(/\{[\s\S]*\}/);
+    
+    // If no JSON found, try parsing the whole content
+    if (!jsonMatch) {
+      try {
+        const parsed = JSON.parse(content);
+        jsonMatch = [JSON.stringify(parsed)];
+      } catch {
+        throw new Error('Failed to extract JSON from AI response. Response: ' + content.substring(0, 200));
+      }
+    }
+    
+    let analysis;
+    try {
+      analysis = JSON.parse(jsonMatch[0]);
+    } catch (parseError) {
+      console.error('JSON parse error:', parseError);
+      throw new Error('Failed to parse AI response as JSON');
+    }
+    
+    // Validate required fields
+    if (!analysis.extractedSkills || !Array.isArray(analysis.extractedSkills)) {
+      analysis.extractedSkills = [];
+    }
+    if (!analysis.matchedSkills || !Array.isArray(analysis.matchedSkills)) {
+      analysis.matchedSkills = [];
+    }
+    if (!analysis.missingSkills || !Array.isArray(analysis.missingSkills)) {
+      analysis.missingSkills = [];
+    }
+    if (typeof analysis.matchPercentage !== 'number') {
+      analysis.matchPercentage = 0;
+    }
+    if (!analysis.suggestions || !Array.isArray(analysis.suggestions)) {
+      analysis.suggestions = [];
+    }
+    
     console.log("Analysis complete:", analysis);
 
     return new Response(

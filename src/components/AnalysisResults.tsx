@@ -3,17 +3,10 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Button } from "@/components/ui/button";
+import type { AnalysisResult } from "@/types/analysis";
 
 interface AnalysisResultsProps {
-  analysis: {
-    extractedSkills: string[];
-    matchedSkills: string[];
-    missingSkills: string[];
-    matchPercentage: number;
-    suggestions: string[];
-    experienceSummary?: string;
-    educationSummary?: string;
-  };
+  analysis: AnalysisResult;
   onReset: () => void;
 }
 
@@ -25,7 +18,7 @@ export const AnalysisResults = ({ analysis, onReset }: AnalysisResultsProps) => 
   };
 
   return (
-    <div className="space-y-6 animate-in fade-in duration-500">
+    <div className="space-y-6 animate-in fade-in-0 duration-500">
       <div className="flex items-center justify-between">
         <h2 className="text-3xl font-bold">Analysis Results</h2>
         <Button variant="outline" onClick={onReset}>

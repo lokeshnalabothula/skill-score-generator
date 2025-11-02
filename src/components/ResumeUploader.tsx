@@ -5,9 +5,10 @@ import { Textarea } from "@/components/ui/textarea";
 import { Card } from "@/components/ui/card";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
+import type { AnalysisResult } from "@/types/analysis";
 
 interface ResumeUploaderProps {
-  onAnalysisComplete: (analysis: any) => void;
+  onAnalysisComplete: (analysis: AnalysisResult) => void;
 }
 
 export const ResumeUploader = ({ onAnalysisComplete }: ResumeUploaderProps) => {
@@ -69,17 +70,30 @@ export const ResumeUploader = ({ onAnalysisComplete }: ResumeUploaderProps) => {
     setIsAnalyzing(true);
 
     try {
+      // Check if Supabase is configured
+      const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+      if (!supabaseUrl) {
+        throw new Error(
+          "Supabase is not configured. Please set VITE_SUPABASE_URL and VITE_SUPABASE_PUBLISHABLE_KEY in your .env file."
+        );
+      }
+
       const { data, error } = await supabase.functions.invoke('analyze-resume', {
         body: { resumeText, jobRequirements }
       });
 
       if (error) throw error;
 
+      if (!data || !data.extractedSkills) {
+        throw new Error("Invalid response from server. Please try again.");
+      }
+
       toast.success("Resume analyzed successfully!");
       onAnalysisComplete(data);
-    } catch (error: any) {
+    } catch (error) {
       console.error('Analysis error:', error);
-      toast.error(error.message || "Failed to analyze resume. Please try again.");
+      const errorMessage = error instanceof Error ? error.message : "Failed to analyze resume. Please try again.";
+      toast.error(errorMessage);
     } finally {
       setIsAnalyzing(false);
     }

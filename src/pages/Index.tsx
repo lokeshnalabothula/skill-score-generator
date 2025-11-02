@@ -2,9 +2,10 @@ import { useState } from "react";
 import { FileSearch, Sparkles } from "lucide-react";
 import { ResumeUploader } from "@/components/ResumeUploader";
 import { AnalysisResults } from "@/components/AnalysisResults";
+import type { AnalysisResult } from "@/types/analysis";
 
 const Index = () => {
-  const [analysis, setAnalysis] = useState<any>(null);
+  const [analysis, setAnalysis] = useState<AnalysisResult | null>(null);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-primary/5 to-accent/5">

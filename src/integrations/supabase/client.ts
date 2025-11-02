@@ -2,8 +2,18 @@
 import { createClient } from '@supabase/supabase-js';
 import type { Database } from './types';
 
-const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
-const SUPABASE_PUBLISHABLE_KEY = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY;
+const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL || '';
+const SUPABASE_PUBLISHABLE_KEY = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY || '';
+
+// Validate environment variables
+if (!SUPABASE_URL || !SUPABASE_PUBLISHABLE_KEY) {
+  console.warn(
+    '⚠️ Supabase environment variables are not set. Please create a .env file with:\n' +
+    'VITE_SUPABASE_URL=your_supabase_url\n' +
+    'VITE_SUPABASE_PUBLISHABLE_KEY=your_supabase_anon_key\n\n' +
+    'The app will still run, but API calls will fail without proper configuration.'
+  );
+}
 
 // Import the supabase client like this:
 // import { supabase } from "@/integrations/supabase/client";

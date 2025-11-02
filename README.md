@@ -110,7 +110,23 @@ The application uses Lovable Cloud (Supabase) for backend services:
 
 - **Edge Functions**: Serverless functions for AI processing
 - **AI Gateway**: Pre-configured access to Google Gemini
-- **No API Keys Required**: Everything is pre-configured
+
+### Environment Variables
+
+Create a `.env` file in the root directory with the following variables:
+
+```env
+VITE_SUPABASE_URL=https://your-project-id.supabase.co
+VITE_SUPABASE_PUBLISHABLE_KEY=your-anon-key-here
+```
+
+**How to get these values:**
+1. Go to your [Supabase Dashboard](https://app.supabase.com)
+2. Select your project
+3. Navigate to Settings → API
+4. Copy the `URL` and `anon` `public` key
+
+**Note**: The `LOVABLE_API_KEY` for the edge function should be set in your Supabase project dashboard under Edge Functions settings, not in the `.env` file.
 
 ## 🌟 Key Features Explained
 
