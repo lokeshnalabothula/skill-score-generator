@@ -1,217 +1,378 @@
-# AI Resume Analyzer 🚀
+# 🤖 AI-Powered Resume Analyzer
 
-An intelligent web application that analyzes resumes using advanced AI technology. Upload your resume, compare it against job requirements, and get instant insights on skill matching, experience analysis, and personalized improvement suggestions.
+## Flask + spaCy NLP + Docker Containerization Project
 
-## ✨ Features
+A containerized web application built using **Flask** and **Natural Language Processing (NLP)** techniques. Automatically evaluates resumes by extracting key skills, experience, and education details to generate a skill-match score and improvement suggestions.
 
-- **🤖 AI-Powered Analysis**: Uses Google Gemini AI for intelligent resume parsing and skill extraction
-- **📊 Skill Matching**: Compares your skills against job requirements with detailed match percentage
-- **📁 File Upload**: Drag-and-drop or browse to upload TXT resumes (PDF/DOCX parsing coming soon)
-- **🎯 Smart Extraction**: Automatically identifies skills, experience, and education
-- **💡 Personalized Suggestions**: Get actionable recommendations to improve your resume
-- **📈 Visual Results**: Beautiful charts and progress indicators showing match scores
-- **🎨 Modern UI**: Clean, professional design with smooth animations
-- **📱 Responsive**: Works seamlessly on desktop, tablet, and mobile devices
-- **🔒 Secure**: All processing happens through secure backend functions
+---
 
-## 🛠️ Technologies Used
+## 🎯 Project Requirements Satisfaction
 
-### Frontend
-- **React 18** - Modern UI framework
-- **TypeScript** - Type-safe development
-- **Vite** - Lightning-fast build tool
-- **Tailwind CSS** - Utility-first styling
-- **shadcn/ui** - Beautiful component library
-- **Lucide React** - Icon library
-- **Sonner** - Toast notifications
+### ✅ Technology Stack
 
-### Backend (Lovable Cloud)
-- **Supabase Edge Functions** - Serverless backend
-- **Lovable AI Gateway** - AI model access (Google Gemini)
-- **PostgreSQL** - Database (ready for future features)
+- **Flask** - Python web framework (backend)
+- **spaCy** - Natural Language Processing library
+- **Docker** - Containerization
+- **Free Tools** - All components are open-source and free
 
-### AI/NLP
-- **Google Gemini 2.5 Flash** - Advanced language model for resume analysis
-- Intelligent skill extraction and matching
-- Contextual understanding of job requirements
+### ✅ Features Implemented
 
-## 🚀 Getting Started
+- ✅ AI-powered skill extraction using spaCy NLP
+- ✅ Automatic resume analysis
+- ✅ Skill matching with percentage score
+- ✅ Improvement suggestions generation
+- ✅ Docker containerization
+- ✅ Professional web interface
+- ✅ File upload support (TXT, PDF)
+
+---
+
+## 🚀 Quick Start Guide
 
 ### Prerequisites
-- Node.js 18+ and npm
-- Git
 
-### Installation
+- Python 3.9+ (`python3 --version`)
+- pip3 (`pip3 --version`)
+- Docker (optional, for containerization)
+- Git (to clone repository)
 
-1. **Clone the repository**
-   ```bash
-   git clone <YOUR_GIT_URL>
-   cd ai-resume-analyzer
-   ```
+### Step 1: Clone Repository
 
-2. **Install dependencies**
-   ```bash
-   npm install
-   ```
+```bash
+git clone <your-repo-url>
+cd skill-score-generator
+```
 
-3. **Start development server**
-   ```bash
-   npm run dev
-   ```
+### Step 2: Install Dependencies
 
-4. **Open your browser**
-   Navigate to `http://localhost:8080`
+```bash
+# Install Python packages
+pip3 install -r requirements.txt
 
-## 📖 How It Works
+# Download spaCy English model
+python3 -m spacy download en_core_web_sm
+```
 
-1. **Upload Resume**: Drag and drop your resume (TXT format) or paste text directly
-2. **Define Requirements**: Enter job requirements as comma-separated skills
-3. **AI Analysis**: Click "Analyze Resume" - AI extracts and processes information
-4. **View Results**: Get detailed insights including:
-   - Overall match percentage
-   - Matched skills (skills you have that match requirements)
-   - Missing skills (required skills you should develop)
-   - All extracted skills from your resume
-   - Experience and education summaries
-   - Personalized improvement suggestions
+### Step 3: Run the Application
 
-## 🎯 Use Cases
+#### Option A: Local Development
 
-- **Job Seekers**: Optimize your resume for specific job postings
-- **Career Development**: Identify skill gaps and areas for improvement
-- **HR Professionals**: Quickly assess candidate resumes
-- **Students**: Prepare better resumes for internships and entry-level positions
-- **Career Coaches**: Provide data-driven resume feedback
+```bash
+python3 app.py
+```
+
+The application will start on: `http://localhost:5001`
+
+#### Option B: Docker (Recommended)
+
+```bash
+# Build Docker image
+docker build -t ai-resume-analyzer .
+
+# Run container
+docker run -d -p 5001:5001 --name resume-analyzer ai-resume-analyzer
+```
+
+Access at: `http://localhost:5001`
+
+#### Option C: Docker Compose
+
+```bash
+docker-compose up -d
+```
+
+---
+
+## 📖 How to Use
+
+1. **Open Browser**: Navigate to `http://localhost:5001`
+
+2. **Upload Resume**: 
+   - Click "Choose File" and upload your resume (TXT or PDF)
+   - OR paste your resume text in the text area
+
+3. **Enter Job Requirements**: 
+   - Enter comma-separated skills (e.g., "Python, Flask, Docker, Problem-solving")
+
+4. **Analyze**: 
+   - Click "🚀 Analyze Resume"
+   - Wait for AI analysis
+
+5. **View Results**:
+   - See match percentage
+   - View matched/missing skills
+   - Read improvement suggestions
+
+---
+
+## 🐳 Docker Commands
+
+### Build Image
+```bash
+docker build -t ai-resume-analyzer .
+```
+
+### Run Container
+```bash
+docker run -d -p 5001:5001 ai-resume-analyzer
+```
+
+### View Logs
+```bash
+docker logs resume-analyzer
+```
+
+### Stop Container
+```bash
+docker stop resume-analyzer
+docker rm resume-analyzer
+```
+
+### Docker Compose
+```bash
+# Start
+docker-compose up -d
+
+# Stop
+docker-compose down
+
+# View logs
+docker-compose logs -f
+```
+
+---
 
 ## 📁 Project Structure
 
 ```
-ai-resume-analyzer/
-├── src/
-│   ├── components/
-│   │   ├── ui/              # shadcn UI components
-│   │   ├── ResumeUploader.tsx   # File upload & input component
-│   │   └── AnalysisResults.tsx  # Results display component
-│   ├── pages/
-│   │   └── Index.tsx        # Main application page
-│   ├── integrations/
-│   │   └── supabase/        # Backend client (auto-generated)
-│   └── index.css            # Global styles & design system
-├── supabase/
-│   ├── functions/
-│   │   └── analyze-resume/  # AI analysis edge function
-│   └── config.toml          # Backend configuration
-└── public/                  # Static assets
+skill-score-generator/
+├── app.py                 # Flask backend application
+├── requirements.txt       # Python dependencies
+├── Dockerfile            # Docker container definition
+├── docker-compose.yml    # Docker Compose configuration
+├── static/
+│   └── index.html        # Web interface
+├── README.md             # This file
+├── DEMO_GUIDE.md         # Demo instructions
+└── REQUIREMENTS_SATISFACTION.md  # Requirements proof
 ```
 
-## 🔧 Configuration
+---
 
-The application uses Lovable Cloud (Supabase) for backend services:
+## 🔧 API Endpoints
 
-- **Edge Functions**: Serverless functions for AI processing
-- **AI Gateway**: Pre-configured access to Google Gemini
-
-### Environment Variables
-
-Create a `.env` file in the root directory with the following variables:
-
-```env
-VITE_SUPABASE_URL=https://your-project-id.supabase.co
-VITE_SUPABASE_PUBLISHABLE_KEY=your-anon-key-here
+### Health Check
+```bash
+GET http://localhost:5001/health
 ```
 
-**How to get these values:**
-1. Go to your [Supabase Dashboard](https://app.supabase.com)
-2. Select your project
-3. Navigate to Settings → API
-4. Copy the `URL` and `anon` `public` key
+### Analyze Resume
+```bash
+POST http://localhost:5001/analyze
+Content-Type: application/json
 
-**Note**: The `LOVABLE_API_KEY` for the edge function should be set in your Supabase project dashboard under Edge Functions settings, not in the `.env` file.
+{
+  "resumeText": "Your resume text...",
+  "jobRequirements": "Python, Flask, Docker"
+}
+```
 
-## 🌟 Key Features Explained
+### Upload File
+```bash
+POST http://localhost:5001/upload
+Content-Type: multipart/form-data
 
-### AI-Powered Resume Analysis
-The application uses Google Gemini 2.5 Flash model to:
-- Extract technical and soft skills
-- Identify education details
-- Summarize work experience
-- Compare against job requirements
-- Generate improvement suggestions
+file: [your-file]
+```
 
-### Smart Skill Matching
-- Calculates match percentage based on overlap
-- Identifies skills you have vs. skills required
-- Highlights missing critical skills
-- Provides context-aware suggestions
+---
 
-### Professional UI/UX
-- Gradient color scheme (professional blue theme)
-- Smooth animations and transitions
-- Progress indicators for loading states
-- Responsive design for all devices
-- Accessible components
+## ✅ Requirements for Linux & Container Technologies Class
 
-## 🚧 Future Enhancements
+### 1. Flask Backend ✅
+- **File**: `app.py`
+- **Evidence**: Pure Flask application with RESTful API
+- **Linux**: Runs on any Linux distribution with Python
 
-- ✅ PDF and DOCX resume parsing
-- ✅ Save analysis history
-- ✅ Export results as PDF
-- ✅ Multiple job requirement templates
-- ✅ Resume builder integration
-- ✅ Industry-specific skill databases
-- ✅ Resume scoring algorithms
-- ✅ Real-time collaborative editing
+### 2. spaCy NLP ✅
+- **File**: `app.py` (lines 26-27, 37-105)
+- **Evidence**: Uses `spacy.load('en_core_web_sm')` for NLP processing
+- **Linux**: Works seamlessly on Linux systems
 
-## 🤝 Contributing
+### 3. Docker Containerization ✅
+- **Files**: `Dockerfile`, `docker-compose.yml`
+- **Evidence**: Complete containerization with all dependencies
+- **Linux**: Docker is native to Linux
 
-Contributions are welcome! Here's how you can help:
+### 4. Container Deployment ✅
+- **File**: `build-and-push.sh`
+- **Evidence**: Ready for Docker Hub deployment
+- **Linux**: Container runs natively on Linux
 
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
+---
+
+## 🐧 Linux & Container Technologies Integration
+
+### How It Works on Linux
+
+1. **Linux Compatibility**:
+   - Python 3 runs natively on Linux
+   - Flask is cross-platform
+   - spaCy supports Linux
+   - Docker is Linux-native
+
+2. **Container Benefits**:
+   - **Isolation**: Application runs in isolated environment
+   - **Portability**: Works on any Linux system with Docker
+   - **Reproducibility**: Same environment everywhere
+   - **Deployment**: Easy to deploy and scale
+
+3. **Docker Architecture**:
+   ```
+   ┌─────────────────────────────────┐
+   │     Linux Host System          │
+   │  ┌──────────────────────────┐  │
+   │  │   Docker Engine           │  │
+   │  │  ┌────────────────────┐  │  │
+   │  │  │  Container          │  │  │
+   │  │  │  - Python 3.11     │  │  │
+   │  │  │  - Flask App        │  │  │
+   │  │  │  - spaCy Model      │  │  │
+   │  │  └────────────────────┘  │  │
+   │  └──────────────────────────┘  │
+   └─────────────────────────────────┘
+   ```
+
+---
+
+## 🔬 Technical Details
+
+### NLP Processing Flow
+
+1. **Text Input**: Resume text received
+2. **spaCy Processing**: 
+   - Tokenization
+   - Named Entity Recognition
+   - Part-of-Speech Tagging
+3. **Skill Extraction**: Pattern matching + NLP analysis
+4. **Matching**: Compare extracted skills vs requirements
+5. **Scoring**: Calculate percentage match
+6. **Suggestions**: Generate improvement recommendations
+
+### Container Build Process
+
+1. **Base Image**: `python:3.11-slim` (Linux-based)
+2. **Install Dependencies**: Flask, spaCy, PyPDF2
+3. **Download spaCy Model**: English language model
+4. **Copy Application**: Flask app code
+5. **Expose Port**: 5001
+6. **Start Command**: `python app.py`
+
+---
+
+## 📊 Project Demonstrates
+
+✅ **Linux System Administration**
+- Working with Linux file system
+- Managing Python environments
+- Service deployment
+
+✅ **Container Technologies**
+- Docker image creation
+- Container orchestration
+- Container networking
+- Port mapping
+
+✅ **DevOps Practices**
+- Infrastructure as Code (Dockerfile)
+- Container registry (Docker Hub ready)
+- CI/CD ready structure
+
+✅ **AI/NLP Integration**
+- Real-world NLP application
+- Text processing with spaCy
+- Automated analysis pipeline
+
+---
+
+## 🎓 Academic Value
+
+### For Linux & Container Technologies Class:
+
+1. **Linux Commands**:
+   - File management
+   - Process management
+   - Network configuration
+
+2. **Docker Concepts**:
+   - Image vs Container
+   - Dockerfile creation
+   - Container lifecycle
+   - Docker networking
+
+3. **Practical Application**:
+   - Real-world use case
+   - Production-ready structure
+   - Industry-standard practices
+
+---
+
+## 🐛 Troubleshooting
+
+### Python Not Found
+```bash
+# Install Python 3
+sudo apt-get update
+sudo apt-get install python3 python3-pip
+```
+
+### spaCy Model Error
+```bash
+python3 -m spacy download en_core_web_sm
+```
+
+### Port Already in Use
+```bash
+# Find process using port 5001
+sudo lsof -i :5001
+
+# Kill process
+sudo kill -9 <PID>
+```
+
+### Docker Issues
+```bash
+# Check Docker is running
+sudo systemctl status docker
+
+# Start Docker
+sudo systemctl start docker
+```
+
+---
 
 ## 📝 License
 
-This project is open source and available under the MIT License.
+Educational project - Free to use and modify
+
+---
 
 ## 🙏 Acknowledgments
 
-- Built with [Lovable](https://lovable.dev) - The AI-powered app builder
-- Powered by [Google Gemini AI](https://deepmind.google/technologies/gemini/)
-- UI components from [shadcn/ui](https://ui.shadcn.com/)
-- Icons from [Lucide](https://lucide.dev/)
-
-## 📧 Contact & Support
-
-For questions, feedback, or support:
-- Open an issue in this repository
-- Visit [Lovable Documentation](https://docs.lovable.dev/)
+- Flask: Python web framework
+- spaCy: NLP library
+- Docker: Containerization platform
+- PyPDF2: PDF processing
 
 ---
 
-**Note**: This project demonstrates the integration of modern React development with AI capabilities. It's designed to be educational, practical, and easily extensible for real-world use cases.
+## 📧 Support
 
-## 🎓 Educational Value
-
-This project demonstrates:
-- ✅ **Full-stack development** with React and Serverless functions
-- ✅ **AI/NLP integration** without complex setup
-- ✅ **Modern DevOps** with automated deployment
-- ✅ **Clean architecture** with separation of concerns
-- ✅ **Professional UI/UX** design patterns
-- ✅ **Type-safe development** with TypeScript
-- ✅ **Responsive design** principles
-- ✅ **Secure backend** implementation
-
-Perfect for:
-- Academic projects
-- Portfolio demonstrations  
-- Learning modern web development
-- Understanding AI integration
-- Practicing full-stack skills
+For issues or questions, check:
+- `DEMO_GUIDE.md` - How to demo
+- `REQUIREMENTS_SATISFACTION.md` - Requirements proof
+- `QUICK_START.md` - Quick setup guide
 
 ---
 
-Made with ❤️ using Lovable AI Platform
+**Built for Linux & Container Technologies Class** 🐧🐳
