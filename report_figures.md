@@ -503,7 +503,7 @@ $ curl http://localhost:5001/health
 
 ```mermaid
 stateDiagram-v2
-    [*] --> Created: docker create
+    [*] --> Created
     Created --> Running: docker start
     Running --> Paused: docker pause
     Paused --> Running: docker unpause
@@ -514,18 +514,15 @@ stateDiagram-v2
     Removed --> [*]
     
     note right of Created
-        Container exists but
-        not running
+        Container exists but<br/>not running
     end note
     
     note right of Running
-        Application is
-        actively running
+        Application is<br/>actively running
     end note
     
     note right of Stopped
-        Container stopped
-        but not removed
+        Container stopped<br/>but not removed
     end note
 ```
 
@@ -608,18 +605,19 @@ Stopped → Removed         docker rm
 ## Figure 3.4: GitHub Repository Upload Workflow
 
 ```mermaid
-gitGraph
-    commit id: "Initial Commit"
-    commit id: "Add Flask backend"
-    commit id: "Add spaCy NLP"
-    commit id: "Add Docker support"
-    branch feature/ui
-    checkout feature/ui
-    commit id: "Professional UI"
-    checkout main
-    merge feature/ui
-    commit id: "Complete implementation"
-    commit id: "Add documentation"
+flowchart LR
+    A[Local Development] -->|git add| B[Staging Area]
+    B -->|git commit| C[Local Repository]
+    C -->|git push| D[GitHub Repository]
+    D -->|Clone/Pull| E[Other Developers]
+    
+    F[Working Directory<br/>app.py, Dockerfile] --> A
+    G[Modified Files] --> A
+    
+    style A fill:#e0e7ff
+    style B fill:#fef3c7
+    style C fill:#dbeafe
+    style D fill:#10b981,stroke:#059669,stroke-width:3px,color:#fff
 ```
 
 ### Git Workflow Diagram:
