@@ -48,6 +48,7 @@ COMMON_SKILLS = {
 }
 
 
+
 def extract_skills(text: str) -> List[str]:
     """
     Extract skills from resume text using spaCy NLP
@@ -358,6 +359,6 @@ def api_info():
 
 if __name__ == '__main__':
     import os
-    port = int(os.environ.get('PORT', 5001))  # Use 5001 as default (5000 often used by AirPlay on macOS)
+    port = int(os.environ.get('PORT', 5000))  # Use 5000 as default for Docker compatibility
     app.run(host='0.0.0.0', port=port, debug=True)
 

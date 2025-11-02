@@ -34,7 +34,7 @@ graph TB
 ### ASCII Version:
 ```
 ┌─────────────────────────────────────────────────────────┐
-│                    SYSTEM ARCHITECTURE                   │
+│                    SYSTEM ARCHITECTURE                  │
 └─────────────────────────────────────────────────────────┘
 
     [User Browser]
@@ -43,10 +43,10 @@ graph TB
          ▼
 ┌────────────────────────────────────────────────────┐
 │  Flask Web Server (Port 5001)                      │
-│  ┌─────────────────┐  ┌──────────────────┐       │
-│  │ Web Interface   │  │  Flask API       │       │
-│  │ (HTML/CSS/JS)   │  │  (app.py)        │       │
-│  └─────────────────┘  └──────────────────┘       │
+│  ┌─────────────────┐  ┌──────────────────┐         │
+│  │ Web Interface   │  │  Flask API       │         │
+│  │ (HTML/CSS/JS)   │  │  (app.py)        │         │
+│  └─────────────────┘  └──────────────────┘         │
 │           │                    │                   │
 └───────────┼────────────────────┼───────────────────┘
             │                    │
@@ -189,7 +189,7 @@ RESUME UPLOAD INTERFACE FLOW
            │ 4. Display Results
            ▼
 ┌─────────────────────────────────────┐
-│   Results Display                    │
+│   Results Display                   │
 │  - Match Percentage (Large)         │
 │  - Matched Skills (Green badges)    │
 │  - Missing Skills (Red badges)      │
