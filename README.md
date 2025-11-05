@@ -6,6 +6,31 @@ A containerized web application built using **Flask** and **Natural Language Pro
 
 ---
 
+## 🎬 Quick Demo Guide
+
+**For a quick demo, see:**
+- 📖 **[QUICK_START.md](QUICK_START.md)** - Fastest way to get started (5 minutes)
+- 🎯 **[DEMO_GUIDE.md](DEMO_GUIDE.md)** - Complete demo script and presentation guide
+- ⚡ **[QUICK_DEMO_COMMANDS.md](QUICK_DEMO_COMMANDS.md)** - Copy-paste commands for demo
+
+**Quick Commands:**
+```bash
+# Install dependencies
+pip3 install -r requirements.txt
+python3 -m spacy download en_core_web_sm
+
+# Run application (defaults to port 5000)
+python3 app.py
+
+# If port 5000 is in use (e.g., macOS AirPlay), use port 5001:
+PORT=5001 python3 app.py
+
+# In another terminal, test it
+curl http://localhost:5000/health  # or :5001 if you used PORT=5001
+```
+
+---
+
 ## 🎯 Project Requirements Satisfaction
 
 ### ✅ Technology Stack
@@ -61,7 +86,13 @@ python3 -m spacy download en_core_web_sm
 python3 app.py
 ```
 
-The application will start on: `http://localhost:5001`
+The application will start on: `http://localhost:5000`
+
+**Note**: If port 5000 is in use (common on macOS due to AirPlay), use:
+```bash
+PORT=5001 python3 app.py
+```
+Then access at: `http://localhost:5001`
 
 #### Option B: Docker (Recommended)
 
@@ -69,8 +100,8 @@ The application will start on: `http://localhost:5001`
 # Build Docker image
 docker build -t ai-resume-analyzer .
 
-# Run container
-docker run -d -p 5001:5001 --name resume-analyzer ai-resume-analyzer
+# Run container (maps host port 5001 to container port 5000)
+docker run -d -p 5001:5000 --name resume-analyzer ai-resume-analyzer
 ```
 
 Access at: `http://localhost:5001`
@@ -85,7 +116,7 @@ docker-compose up -d
 
 ## 📖 How to Use
 
-1. **Open Browser**: Navigate to `http://localhost:5001`
+1. **Open Browser**: Navigate to `http://localhost:5000` (or `http://localhost:5001` if using Docker)
 
 2. **Upload Resume**: 
    - Click "Choose File" and upload your resume (TXT or PDF)
@@ -114,7 +145,8 @@ docker build -t ai-resume-analyzer .
 
 ### Run Container
 ```bash
-docker run -d -p 5001:5001 ai-resume-analyzer
+# Map host port 5001 to container port 5000
+docker run -d -p 5001:5000 ai-resume-analyzer
 ```
 
 ### View Logs
@@ -163,12 +195,12 @@ skill-score-generator/
 
 ### Health Check
 ```bash
-GET http://localhost:5001/health
+GET http://localhost:5000/health
 ```
 
 ### Analyze Resume
 ```bash
-POST http://localhost:5001/analyze
+POST http://localhost:5000/analyze
 Content-Type: application/json
 
 {
@@ -179,7 +211,7 @@ Content-Type: application/json
 
 ### Upload File
 ```bash
-POST http://localhost:5001/upload
+POST http://localhost:5000/upload
 Content-Type: multipart/form-data
 
 file: [your-file]
@@ -265,7 +297,7 @@ file: [your-file]
 2. **Install Dependencies**: Flask, spaCy, PyPDF2
 3. **Download spaCy Model**: English language model
 4. **Copy Application**: Flask app code
-5. **Expose Port**: 5001
+5. **Expose Port**: 5000
 6. **Start Command**: `python app.py`
 
 ---
@@ -333,11 +365,14 @@ python3 -m spacy download en_core_web_sm
 
 ### Port Already in Use
 ```bash
-# Find process using port 5001
-sudo lsof -i :5001
+# Find process using port 5000
+sudo lsof -i :5000
 
-# Kill process
+# Kill process (or use a different port)
 sudo kill -9 <PID>
+
+# Or simply use a different port
+PORT=5001 python3 app.py
 ```
 
 ### Docker Issues

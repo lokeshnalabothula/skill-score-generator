@@ -1,10 +1,9 @@
 import { useState, useCallback } from "react";
-import { Upload, FileText, Loader2 } from "lucide-react";
+import { Loader2, Upload, FileText } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Card } from "@/components/ui/card";
 import { toast } from "sonner";
-import { supabase } from "@/integrations/supabase/client";
 import type { AnalysisResult } from "@/types/analysis";
 
 interface ResumeUploaderProps {
@@ -14,27 +13,65 @@ interface ResumeUploaderProps {
 export const ResumeUploader = ({ onAnalysisComplete }: ResumeUploaderProps) => {
   const [resumeText, setResumeText] = useState("");
   const [jobRequirements, setJobRequirements] = useState(
-    "React, TypeScript, Node.js, REST APIs, Git, Problem-solving, Team collaboration"
+    "Python, Flask, Docker, REST API, Problem-solving, Communication, Teamwork, Git, Linux, JavaScript, React, TypeScript, Node.js, AWS, SQL, MongoDB"
   );
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
+  const [isUploading, setIsUploading] = useState(false);
 
   const handleFileUpload = useCallback(async (file: File) => {
     if (!file) return;
 
-    const validTypes = ['text/plain', 'application/pdf', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
+    const validTypes = ['text/plain', 'application/pdf'];
+    const fileName = file.name.toLowerCase();
     
-    if (!validTypes.includes(file.type)) {
-      toast.error("Please upload a TXT, PDF, or DOCX file");
+    if (!fileName.endsWith('.txt') && !fileName.endsWith('.pdf')) {
+      toast.error("Please upload a TXT or PDF file");
       return;
     }
 
-    if (file.type === 'text/plain') {
-      const text = await file.text();
-      setResumeText(text);
-      toast.success("Resume loaded successfully!");
-    } else {
-      toast.info("For PDF/DOCX files, please paste your resume text manually for now");
+    setIsUploading(true);
+
+    try {
+      if (fileName.endsWith('.txt')) {
+        // Read TXT file directly
+        const text = await file.text();
+        if (text && text.trim()) {
+          setResumeText(text);
+          toast.success("Resume loaded successfully! Text box is now filled.");
+        } else {
+          toast.error("File appears to be empty. Please check your file.");
+        }
+      } else if (fileName.endsWith('.pdf')) {
+        // For PDF, upload to Flask backend
+        const formData = new FormData();
+        formData.append('file', file);
+
+        const flaskBackendUrl = import.meta.env.VITE_FLASK_BACKEND_URL || 'http://localhost:5000';
+        const response = await fetch(`${flaskBackendUrl}/upload`, {
+          method: 'POST',
+          body: formData
+        });
+
+        if (!response.ok) {
+          const errorData = await response.json().catch(() => ({}));
+          throw new Error(errorData.error || 'Failed to upload PDF file');
+        }
+
+        const data = await response.json();
+        if (data.text && data.text.trim()) {
+          setResumeText(data.text);
+          toast.success("PDF processed successfully! Text box is now filled.");
+        } else {
+          throw new Error("No text extracted from PDF or file is empty");
+        }
+      }
+    } catch (error) {
+      console.error('File upload error:', error);
+      const errorMessage = error instanceof Error ? error.message : "Failed to process file. Please try pasting the text manually.";
+      toast.error(errorMessage);
+    } finally {
+      setIsUploading(false);
     }
   }, []);
 
@@ -58,7 +95,7 @@ export const ResumeUploader = ({ onAnalysisComplete }: ResumeUploaderProps) => {
 
   const analyzeResume = async () => {
     if (!resumeText.trim()) {
-      toast.error("Please enter or upload your resume text");
+      toast.error("Please upload a resume file (TXT or PDF) first");
       return;
     }
 
@@ -70,19 +107,40 @@ export const ResumeUploader = ({ onAnalysisComplete }: ResumeUploaderProps) => {
     setIsAnalyzing(true);
 
     try {
-      // Check if Supabase is configured
+      // Use Flask backend (default) or Supabase if configured
       const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
-      if (!supabaseUrl) {
-        throw new Error(
-          "Supabase is not configured. Please set VITE_SUPABASE_URL and VITE_SUPABASE_PUBLISHABLE_KEY in your .env file."
-        );
+      const flaskBackendUrl = import.meta.env.VITE_FLASK_BACKEND_URL || 'http://localhost:5000';
+      
+      let data;
+      
+      if (supabaseUrl) {
+        // Use Supabase if configured
+        const { supabase } = await import("@/integrations/supabase/client");
+        const result = await supabase.functions.invoke('analyze-resume', {
+          body: { resumeText, jobRequirements }
+        });
+        
+        if (result.error) throw result.error;
+        data = result.data;
+      } else {
+        // Use Flask backend
+        const response = await fetch(`${flaskBackendUrl}/analyze`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            resumeText,
+            jobRequirements
+          })
+        });
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        data = await response.json();
       }
-
-      const { data, error } = await supabase.functions.invoke('analyze-resume', {
-        body: { resumeText, jobRequirements }
-      });
-
-      if (error) throw error;
 
       if (!data || !data.extractedSkills) {
         throw new Error("Invalid response from server. Please try again.");
@@ -92,7 +150,7 @@ export const ResumeUploader = ({ onAnalysisComplete }: ResumeUploaderProps) => {
       onAnalysisComplete(data);
     } catch (error) {
       console.error('Analysis error:', error);
-      const errorMessage = error instanceof Error ? error.message : "Failed to analyze resume. Please try again.";
+      const errorMessage = error instanceof Error ? error.message : "Failed to analyze resume. Make sure the Flask backend is running on port 5000.";
       toast.error(errorMessage);
     } finally {
       setIsAnalyzing(false);
@@ -111,60 +169,65 @@ export const ResumeUploader = ({ onAnalysisComplete }: ResumeUploaderProps) => {
         onDragOver={handleDragOver}
         onDragLeave={handleDragLeave}
       >
-        <div className="p-8 text-center">
-          <Upload className="mx-auto h-12 w-12 text-muted-foreground mb-4" />
-          <h3 className="text-lg font-semibold mb-2">Upload Your Resume</h3>
+        <div className="p-6 text-center">
+          <Upload className="mx-auto h-10 w-10 text-muted-foreground mb-3" />
+          <h3 className="text-lg font-semibold mb-2">
+            Upload Resume File {resumeText.trim() ? "✓" : ""}
+          </h3>
           <p className="text-sm text-muted-foreground mb-4">
-            Drag and drop your resume or click to browse
+            Drag and drop your resume file or click to browse
           </p>
           <input
             type="file"
             id="file-upload"
             className="hidden"
-            accept=".txt,.pdf,.docx"
+            accept=".txt,.pdf"
             onChange={(e) => e.target.files?.[0] && handleFileUpload(e.target.files[0])}
+            disabled={isUploading}
           />
           <Button
             variant="outline"
             onClick={() => document.getElementById('file-upload')?.click()}
+            disabled={isUploading}
           >
-            <FileText className="mr-2 h-4 w-4" />
-            Browse Files
+            {isUploading ? (
+              <>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                Processing...
+              </>
+            ) : (
+              <>
+                <FileText className="mr-2 h-4 w-4" />
+                Browse Files
+              </>
+            )}
           </Button>
           <p className="text-xs text-muted-foreground mt-3">
-            Supported formats: TXT, PDF, DOCX
+            Supported formats: TXT, PDF
           </p>
         </div>
       </Card>
 
       <div className="space-y-4">
-        <div>
-          <label className="text-sm font-medium mb-2 block">
-            Resume Text
-          </label>
-          <Textarea
-            placeholder="Paste your resume text here or upload a file above..."
-            value={resumeText}
-            onChange={(e) => setResumeText(e.target.value)}
-            className="min-h-[200px] font-mono text-sm"
-          />
-        </div>
 
         <div>
           <label className="text-sm font-medium mb-2 block">
             Job Requirements (comma-separated skills)
           </label>
           <Textarea
-            placeholder="e.g., React, TypeScript, Node.js, Problem-solving..."
+            placeholder="Enter comma-separated skills..."
             value={jobRequirements}
             onChange={(e) => setJobRequirements(e.target.value)}
             className="min-h-[100px]"
           />
+          <p className="text-xs text-muted-foreground mt-2">
+            Default skills are pre-filled. Edit as needed for your target job.
+          </p>
         </div>
 
         <Button
           onClick={analyzeResume}
-          disabled={isAnalyzing}
+          disabled={isAnalyzing || !resumeText.trim()}
           className="w-full"
           size="lg"
         >
@@ -173,10 +236,17 @@ export const ResumeUploader = ({ onAnalysisComplete }: ResumeUploaderProps) => {
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />
               Analyzing with AI...
             </>
+          ) : !resumeText.trim() ? (
+            "⚠️ Please upload a resume file first"
           ) : (
-            "Analyze Resume"
+            "🚀 Analyze Resume"
           )}
         </Button>
+        {!resumeText.trim() && (
+          <p className="text-xs text-amber-600 text-center mt-2">
+            ⚠️ Please upload a resume file (TXT or PDF) to continue
+          </p>
+        )}
       </div>
     </div>
   );

@@ -466,23 +466,23 @@
         
         <form id="analyzeForm">
             <div class="form-group">
-                <label for="resumeFile">📄 Upload Resume File</label>
-                <input type="file" id="resumeFile" accept=".txt,.pdf,.doc,.docx">
-                <label for="resumeText">📝 Or Paste Resume Text</label>
-                <textarea id="resumeText" rows="10" placeholder="Paste your resume text here or upload a file above...
-
-Example:
-Software Engineer with 5+ years of experience in Python, Flask, Docker, and cloud technologies. 
-Strong problem-solving skills and excellent communication abilities. 
-Led multiple successful projects using Agile methodologies."></textarea>
+                <label for="resumeFile">📄 Upload Resume File <span id="resumeFileStatus"></span></label>
+                <input type="file" id="resumeFile" accept=".txt,.pdf">
+                <p style="margin-top: 8px; color: #64748b; font-size: 0.85em; font-style: italic;">
+                    Upload a TXT or PDF file to analyze your resume
+                </p>
             </div>
             
             <div class="form-group">
                 <label for="jobRequirements">🎯 Job Requirements (comma-separated skills)</label>
-                <textarea id="jobRequirements" rows="4" placeholder="Python, Flask, Docker, Machine Learning, Problem-solving, Team Leadership, REST APIs, Git, AWS"></textarea>
+                <textarea id="jobRequirements" rows="4">Python, Flask, Docker, REST API, Problem-solving, Communication, Teamwork, Git, Linux, JavaScript, React, TypeScript, Node.js, AWS, SQL, MongoDB</textarea>
+                <p style="margin-top: 8px; color: #64748b; font-size: 0.85em; font-style: italic;">Default skills are pre-filled. Edit as needed for your target job.</p>
             </div>
             
-            <button type="submit" id="analyzeBtn">🚀 Analyze Resume</button>
+            <button type="submit" id="analyzeBtn">⚠️ Please upload a resume file first</button>
+            <p id="buttonHelp" style="margin-top: 8px; color: #f59e0b; font-size: 0.85em; text-align: center;">
+                ⚠️ Please upload a resume file (TXT or PDF) to continue
+            </p>
         </form>
         
         <div class="loading" id="loading">
@@ -555,7 +555,27 @@ Led multiple successful projects using Agile methodologies."></textarea>
         const success = document.getElementById('success');
         const analyzeBtn = document.getElementById('analyzeBtn');
         const resumeFile = document.getElementById('resumeFile');
-        const resumeText = document.getElementById('resumeText');
+        const resumeFileStatus = document.getElementById('resumeFileStatus');
+        const buttonHelp = document.getElementById('buttonHelp');
+        let resumeTextContent = ''; // Store uploaded file content
+        
+        // Update status indicator and button state
+        function updateResumeStatus() {
+            if (resumeTextContent && resumeTextContent.trim()) {
+                resumeFileStatus.textContent = '✓';
+                resumeFileStatus.style.color = '#10b981';
+                analyzeBtn.disabled = false;
+                analyzeBtn.textContent = '🚀 Analyze Resume';
+                buttonHelp.style.display = 'none';
+            } else {
+                resumeFileStatus.textContent = '';
+                analyzeBtn.disabled = true;
+                analyzeBtn.textContent = '⚠️ Please upload a resume file first';
+                buttonHelp.style.display = 'block';
+            }
+        }
+        
+        updateResumeStatus(); // Initial check
         
         // Handle file upload
         resumeFile.addEventListener('change', async (e) => {
@@ -564,47 +584,59 @@ Led multiple successful projects using Agile methodologies."></textarea>
             
             const fileName = file.name.toLowerCase();
             
-            if (!fileName.endsWith('.txt') && !fileName.endsWith('.pdf') && 
-                !fileName.endsWith('.doc') && !fileName.endsWith('.docx')) {
-                showError('Please upload a TXT, PDF, DOC, or DOCX file.');
+            if (!fileName.endsWith('.txt') && !fileName.endsWith('.pdf')) {
+                showError('Please upload a TXT or PDF file.');
                 return;
             }
             
             analyzeBtn.disabled = true;
             const originalText = analyzeBtn.textContent;
-            analyzeBtn.textContent = '📤 Uploading...';
+            analyzeBtn.textContent = '📤 Processing file...';
             
             try {
                 if (fileName.endsWith('.txt')) {
+                    // Read TXT file directly
                     const text = await file.text();
-                    resumeText.value = text;
-                    showError('');
-                    showSuccess('✅ Resume file loaded successfully!');
-                    analyzeBtn.disabled = false;
-                    analyzeBtn.textContent = originalText;
-                    return;
+                    if (text && text.trim()) {
+                        resumeTextContent = text;
+                        updateResumeStatus();
+                        showError('');
+                        showSuccess('✅ Resume file loaded successfully! Ready to analyze.');
+                        console.log('Resume loaded with', text.length, 'characters');
+                    } else {
+                        resumeTextContent = '';
+                        showError('File appears to be empty. Please check your file.');
+                        updateResumeStatus();
+                    }
+                } else if (fileName.endsWith('.pdf')) {
+                    // Upload PDF to Flask backend
+                    const formData = new FormData();
+                    formData.append('file', file);
+                    
+                    const response = await fetch('/upload', {
+                        method: 'POST',
+                        body: formData
+                    });
+                    
+                    const data = await response.json();
+                    
+                    if (response.ok && data.text && data.text.trim()) {
+                        resumeTextContent = data.text;
+                        updateResumeStatus();
+                        showError('');
+                        showSuccess('✅ PDF processed successfully! Ready to analyze.');
+                        console.log('Resume loaded with', data.text.length, 'characters');
+                    } else {
+                        resumeTextContent = '';
+                        showError(data.error || 'Failed to process PDF file or file is empty.');
+                        updateResumeStatus();
+                    }
                 }
-                
-                const formData = new FormData();
-                formData.append('file', file);
-                
-                const response = await fetch('/upload', {
-                    method: 'POST',
-                    body: formData
-                });
-                
-                const data = await response.json();
-                
-                if (response.ok && data.text) {
-                    resumeText.value = data.text;
-                    showError('');
-                    showSuccess('✅ Resume file loaded successfully!');
-                } else {
-                    showError(data.error || 'Failed to process file. ' + (data.suggestion || ''));
-                }
-                
             } catch (err) {
-                showError('Error reading file: ' + err.message);
+                console.error('File upload error:', err);
+                resumeTextContent = '';
+                showError('Error processing file: ' + err.message);
+                updateResumeStatus();
             } finally {
                 analyzeBtn.disabled = false;
                 analyzeBtn.textContent = originalText;
@@ -614,11 +646,15 @@ Led multiple successful projects using Agile methodologies."></textarea>
         form.addEventListener('submit', async (e) => {
             e.preventDefault();
             
-            const resumeTextValue = resumeText.value.trim();
             const jobRequirements = document.getElementById('jobRequirements').value.trim();
             
-            if (!resumeTextValue || !jobRequirements) {
-                showError('Please fill in both resume text and job requirements.');
+            if (!resumeTextContent || !resumeTextContent.trim()) {
+                showError('❌ Please upload a resume file (TXT or PDF) first!');
+                return;
+            }
+            
+            if (!jobRequirements) {
+                showError('Please enter job requirements.');
                 return;
             }
             
@@ -635,7 +671,7 @@ Led multiple successful projects using Agile methodologies."></textarea>
                         'Content-Type': 'application/json',
                     },
                     body: JSON.stringify({
-                        resumeText: resumeTextValue,
+                        resumeText: resumeTextContent,
                         jobRequirements: jobRequirements
                     })
                 });

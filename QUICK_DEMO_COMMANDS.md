@@ -25,6 +25,11 @@ python3 app.py
  * Running on http://127.0.0.1:5000
 ```
 
+**Note**: If port 5000 is busy (macOS AirPlay), use port 5001:
+```bash
+PORT=5001 python3 app.py
+```
+
 ---
 
 ## 🧪 Test the API
@@ -33,7 +38,11 @@ python3 app.py
 
 ### 1. Health Check
 ```bash
+# Default port 5000
 curl http://localhost:5000/health
+
+# Or if using port 5001
+curl http://localhost:5001/health
 ```
 
 ### 2. Test Resume Analysis
@@ -57,12 +66,14 @@ docker build -t ai-resume-analyzer .
 
 ### Run Container
 ```bash
-docker run -d -p 5000:5000 --name analyzer ai-resume-analyzer
+# Map host port 5001 to container port 5000 (avoids macOS AirPlay conflict)
+docker run -d -p 5001:5000 --name analyzer ai-resume-analyzer
 ```
 
 ### Test Container
 ```bash
-curl http://localhost:5000/health
+# Access on host port 5001
+curl http://localhost:5001/health
 ```
 
 ---

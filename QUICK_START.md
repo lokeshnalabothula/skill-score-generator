@@ -26,12 +26,17 @@ python app.py
  * Press CTRL+C to quit
 ```
 
+**Note**: If port 5000 is in use (e.g., macOS AirPlay), set `PORT=5001` environment variable:
+```bash
+PORT=5001 python3 app.py
+```
+
 ### Step 3: Test API (1 minute)
 
 **Open new terminal** and run:
 
 ```bash
-# Test health
+# Test health (use 5000 or 5001 depending on what port you used)
 curl http://localhost:5000/health
 
 # Test analysis
@@ -49,11 +54,11 @@ curl -X POST http://localhost:5000/analyze \
 # Build image
 docker build -t ai-resume-analyzer .
 
-# Run container
-docker run -d -p 5000:5000 --name analyzer ai-resume-analyzer
+# Run container (maps host port 5001 to container port 5000)
+docker run -d -p 5001:5000 --name analyzer ai-resume-analyzer
 
-# Test
-curl http://localhost:5000/health
+# Test (access on host port 5001)
+curl http://localhost:5001/health
 ```
 
 ---
